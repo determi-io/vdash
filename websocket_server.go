@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"time"
 
 	"net/http"
 
@@ -81,12 +80,12 @@ func (wsh webSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			}
 		}()
 
-		go func() {
-			for {
-				ptmx.WriteString("a")
-				time.Sleep(2 * time.Second)
-			}
-		}()
+		// go func() {
+		// 	for {
+		// 		ptmx.WriteString("a")
+		// 		time.Sleep(2 * time.Second)
+		// 	}
+		// }()
 
 		// streaming websocket -> ptmx
 		for {

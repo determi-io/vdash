@@ -24,13 +24,26 @@ function App() {
     const ref_term = useRef<HTMLDivElement>(null);
     const socket = new WebSocket("ws://localhost:8080");
     const attachAddon = new AttachAddon(socket);
-    var term_loaded = false;
 
     //-------------------
     // Functions
     //-------------------
     function greet() {
         Greet(name).then(updateResultText);
+        term.write("ls\n");
+    }
+
+    function openTerm() {
+        if (ref_term.current)
+        {
+            term.open(ref_term.current);
+            term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
+            term.loadAddon(attachAddon);
+        }
+    }
+
+    function pasteText() {
+        term.input("ls\n");
     }
 
     function Block()
@@ -48,17 +61,6 @@ function App() {
         return list;
     }
 
-    useEffect(() => {
-        if (!term_loaded && ref_term.current)
-        {
-            term.open(ref_term.current);
-            term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
-            term.loadAddon(attachAddon);
-
-            term_loaded = true;
-        }
-    });
-
     return (
         <div id="App">
             <img src={logo} id="logo" alt="logo"/>
@@ -66,6 +68,8 @@ function App() {
             <div id="input" className="input-box">
                 <input id="name" className="input" onChange={updateName} autoComplete="off" name="input" type="text"/>
                 <button className="btn" onClick={greet}>Greet</button>
+                <button className='btn' onClick={openTerm}>open term</button>
+                <button className='btn' onClick={pasteText}>paste text</button>
             </div>
             <Block />
             <Block />
