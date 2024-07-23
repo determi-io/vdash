@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"time"
 
 	"net/http"
 
@@ -80,8 +81,14 @@ func (wsh webSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			}
 		}()
 
+		go func() {
+			for {
+				ptmx.WriteString("a")
+				time.Sleep(2 * time.Second)
+			}
+		}()
+
 		// streaming websocket -> ptmx
-		// buf := make([]byte, websocket.DefaultMaxPayloadBytes)
 		for {
 			mt, msg, err := c.ReadMessage()
 			if mt != websocket.TextMessage {
@@ -110,18 +117,6 @@ func (wsh webSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		// log.Println("start responding to client...")
 
-		// i := 1
-		// for {
-		// 	response := fmt.Sprintf("Notification %d", i)
-		// 	err = c.WriteMessage(websocket.TextMessage, []byte(response))
-		// 	if err != nil {
-		// 		log.Printf("Error %s when sending message to client", err)
-		// 		return
-		// 	}
-
-		// 	i = i + 1
-		// 	time.Sleep(2 * time.Second)
-		// }
 	}
 }
 
