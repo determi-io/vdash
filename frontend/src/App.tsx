@@ -24,6 +24,7 @@ function App() {
     const ref_term = useRef<HTMLDivElement>(null);
     const socket = new WebSocket("ws://localhost:8080");
     const attachAddon = new AttachAddon(socket);
+    var term_loaded = false;
 
     //-------------------
     // Functions
@@ -48,12 +49,13 @@ function App() {
     }
 
     useEffect(() => {
-        if (ref_term.current)
+        if (!term_loaded && ref_term.current)
         {
             term.open(ref_term.current);
             term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
             term.loadAddon(attachAddon);
-            
+
+            term_loaded = true;
         }
     });
 

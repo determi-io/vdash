@@ -1,13 +1,15 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"log"
-	"strings"
-	"time"
+	"os"
+	"os/exec"
 
 	"net/http"
 
+	"github.com/creack/pty"
 	"github.com/gorilla/websocket"
 )
 
@@ -31,6 +33,22 @@ func (wsh webSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	defer c.Close()
 
+	////////////////////////////////////////////
+	// Terminal
+
+	// Create arbitrary command.
+	cmd := exec.Command("bash")
+
+	// Start the command with a pty.
+	ptmx, err := pty.Start(cmd)
+	if err != nil {
+		log.Printf("Error %s when starting pty", err)
+	}
+	// Make sure to close the pty at the end.
+	defer func() { _ = ptmx.Close() }() // Best effort.
+
+	fmt.Println("started bash")
+
 	for {
 
 		mt, message, err := c.ReadMessage()
@@ -50,30 +68,60 @@ func (wsh webSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 		log.Printf("Receive message %s", string(message))
+		log.Println(" => starting bash")
 
-		if strings.Trim(string(message), "\n") != "start" {
-			err = c.WriteMessage(websocket.TextMessage, []byte("You did not say the magic word!"))
-			if err != nil {
-				log.Printf("Error %s when sending message to client", err)
-				return
+		// streaming ptmx -> websocket
+		go func() {
+			s := bufio.NewScanner(ptmx)
+			s.Split(bufio.ScanRunes)
+			for s.Scan() {
+				log.Printf("Got rune: '%s'", s.Text())
+				c.WriteMessage(websocket.TextMessage, []byte(s.Text()))
 			}
-			continue
-		}
+		}()
 
-		log.Println("start responding to client...")
-
-		i := 1
+		// streaming websocket -> ptmx
+		// buf := make([]byte, websocket.DefaultMaxPayloadBytes)
 		for {
-			response := fmt.Sprintf("Notification %d", i)
-			err = c.WriteMessage(websocket.TextMessage, []byte(response))
-			if err != nil {
-				log.Printf("Error %s when sending message to client", err)
-				return
+			mt, msg, err := c.ReadMessage()
+			if mt != websocket.TextMessage {
+				log.Println("received binary message from websocket")
+				continue
 			}
-
-			i = i + 1
-			time.Sleep(2 * time.Second)
+			if err != nil {
+				fmt.Fprintln(os.Stderr, err.Error())
+				os.Exit(1)
+			}
+			log.Printf("Got message from websocket: '%s'", msg)
+			// fmt.Fprint(ptmx, msg)
+			ptmx.Write(msg)
 		}
+
+		// _, _ = io.Copy(os.Stdout, ptmx)
+
+		// if strings.Trim(string(message), "\n") != "start" {
+		// 	err = c.WriteMessage(websocket.TextMessage, []byte("You did not say the magic word!"))
+		// 	if err != nil {
+		// 		log.Printf("Error %s when sending message to client", err)
+		// 		return
+		// 	}
+		// 	continue
+		// }
+
+		// log.Println("start responding to client...")
+
+		// i := 1
+		// for {
+		// 	response := fmt.Sprintf("Notification %d", i)
+		// 	err = c.WriteMessage(websocket.TextMessage, []byte(response))
+		// 	if err != nil {
+		// 		log.Printf("Error %s when sending message to client", err)
+		// 		return
+		// 	}
+
+		// 	i = i + 1
+		// 	time.Sleep(2 * time.Second)
+		// }
 	}
 }
 
