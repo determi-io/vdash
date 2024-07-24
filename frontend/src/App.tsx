@@ -48,13 +48,13 @@ type Instruction<Input,Output> =
 type FragmentInstance =
 {
     fragmentReference: FragmentReference,
-    value: object
+    value: unknown
 };
 function fragmentInstance<Value>(name: string, value: Value) : FragmentInstance
 {
     return {
         fragmentReference: { fragmentName: name },
-        value: value as object
+        value,
     };
 }
 
@@ -286,7 +286,21 @@ function SystemStateUI()
         const display_state = props.state?.state?.toString() ?? "Unknown";
         const display_required = props.state?.required?.toString() ?? "Unknown";
         return (
-            <div>{props.fragment_ref.fragmentName}: is={display_state}, should={display_required}</div>
+            <div className='fragment'>
+                <p className='fragment-text'>
+                    {props.fragment_ref.fragmentName}
+                </p>
+                <p className='fragment-description'>
+                    current:
+                </p>
+                <p className='fragment-label'>
+                    {display_state}
+                </p>
+                <p className='fragment-label'>
+                    {display_required}
+                </p>
+                <button className='btn'>Test</button>
+            </div>
         );
     }
 
