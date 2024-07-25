@@ -1,3 +1,7 @@
+:root {
+    --widget-border-color: #333388
+}
+
 #app {
     height: 100vh;
     text-align: center;
@@ -56,6 +60,17 @@
 .input-box .input:focus {
     border: none;
     background-color: rgba(255, 255, 255, 1);
+}
+
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    padding: 0.2em;
 }
 
 
@@ -126,3 +141,82 @@
     padding: 0 2.6rem;
   }
 }
+
+/* -------------------- widgeting ---------------------- */
+
+
+.widget {
+    background-color: #222;
+    border-radius: 10px;
+    border-color: var(--widget-border-color);
+    border-style: solid;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    /* width: 400px; */
+    /* padding: 20px; */
+}
+
+.widget-header {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.widget-content {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.widget-section-header {
+    padding: 0 0;
+}
+
+.widget-section-header p {
+    padding: 0 0;
+    margin: 0 5px;
+    text-align: left;
+}
+
+.widget-section {
+    padding: 10px 20px;
+}
+
+.widget-textbox {
+    width: 100%;
+    /* padding: 10px; */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    resize: none;
+}
+
+.widget-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.widget-table th,
+.widget-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.shell-output {
+    font-family: monospace;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+hr {
+    border: 0;
+    border-top: 3px solid var(--widget-border-color);
+    /* margin: 10px 0; */
+    margin: 10px 0;
+    padding: 0 0;
+}
+
+
+

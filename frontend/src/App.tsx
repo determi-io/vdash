@@ -285,21 +285,66 @@ function SystemStateUI()
     {
         const display_state = props.state?.state?.toString() ?? "Unknown";
         const display_required = props.state?.required?.toString() ?? "Unknown";
+        // return (
+        //     <div className='fragment'>
+        //         <p className='fragment-text'>
+        //             {props.fragment_ref.fragmentName}
+        //         </p>
+        //         <p className='fragment-description'>
+        //             current:
+        //         </p>
+        //         <p className='fragment-label'>
+        //             {display_state}
+        //         </p>
+        //         <p className='fragment-label'>
+        //             {display_required}
+        //         </p>
+        //         <button className='btn'>Test</button>
+        //     </div>
+        // );
+
         return (
-            <div className='fragment'>
-                <p className='fragment-text'>
-                    {props.fragment_ref.fragmentName}
-                </p>
-                <p className='fragment-description'>
-                    current:
-                </p>
-                <p className='fragment-label'>
-                    {display_state}
-                </p>
-                <p className='fragment-label'>
-                    {display_required}
-                </p>
-                <button className='btn'>Test</button>
+            <div className="widget">
+                <div className="widget-header">Firewall</div>
+                <div className="widget-content">
+                    <hr />
+                    <div className='widget-section-header'>
+                        <p>Current</p>
+                    </div>
+                    <div className="widget-section">
+                        <textarea className="widget-textbox" placeholder="Enter text here..."></textarea>
+                    </div>
+                    <hr />
+                    <div className='widget-section-header'>
+                        <p>Required</p>
+                    </div>
+                    <div className="widget-section">
+                        <table className="widget-table">
+                            <thead>
+                                <tr>
+                                    <th>Column 1</th>
+                                    <th>Column 2</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Data 1</td>
+                                    <td>Data 2</td>
+                                </tr>
+                                <tr>
+                                    <td>Data 3</td>
+                                    <td>Data 4</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    {/* <hr /> */}
+                    {/* <div className="widget-section">
+                        <div className="shell-output">
+                            <p>Shell output will be displayed here...</p>
+                        </div>
+                    </div> */}
+                </div>
             </div>
         );
     }
