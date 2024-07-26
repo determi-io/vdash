@@ -6,6 +6,7 @@ toolchain go1.22.5
 
 require (
 	github.com/creack/pty v1.1.21
+	github.com/determi-io/go-agda-wrapper v0.1.2
 	github.com/gorilla/websocket v1.5.3
 	github.com/wailsapp/wails/v2 v2.9.1
 )
